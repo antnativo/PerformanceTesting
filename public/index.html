@@ -1,0 +1,210 @@
+<html>
+<head></head>
+<body>
+  <p id="title">jQuery Vs Zepto</p>
+  <div id="toggleCSS" class="on"></div>
+  <ul id="list-test" style="display:none;"></ul>
+  <div id="html"></div>
+  <ul id="collection" style="display:none;">
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  <ul>
+  <script src="js/JSLitmus.js"></script>
+  <script src="js/zepto.js"></script>
+  <script src="js/jquery.js"></script>
+  <script>
+// The empty form of a non-looping test.  This should result in "Infinity"
+// operations per second, or very close to it.
+var ZeptoMark = 50, 
+    jQueryMark = 50, 
+    jsMark = 50, 
+    innerHTML = "<div>Loading Script..</div><script>console.log('Loaded')<\/script></div>Script Loaded</div>",
+    arrayOfNumbers = [0,1,2,3,4,5,6,7,8,9];
+var restAndRun = (function f(){
+  if(document.querySelector("button[onclick='JSLitmus.runAll(event)']") != null){
+      document.querySelector("button[onclick='JSLitmus.runAll(event)']").addEventListener("click",function(){
+        ZeptoMark = 50;
+        jQueryMark = 50;
+        jsMark = 50;
+      },false)
+  }else{
+    setTimeout(f,0)
+  }
+});
+restAndRun();
+
+
+function each(nodes,func){
+  var arrNodes = nodes;
+  if(document.getElementById("html") instanceof HTMLCollection){
+    arrNodes = Array
+                .prototype
+                .slice
+                .apply(nodes);
+  }
+  var count =  arrNodes.length-1;
+  while(count > 0){
+    func(arrNodes[count],count,arrNodes)
+    count--;
+  }
+
+}
+
+JSLitmus.test('Append Nodes (Zepto)', function() {
+  while(ZeptoMark > 0){
+    Zepto("#list-test").append("<li>"+ZeptoMark+"</li>")
+    ZeptoMark--;
+  }
+});
+JSLitmus.test('Remove Nodes ( Zepto )', function() {
+  Zepto("#list-test").children().each(function(){
+    this.remove()
+  });
+});
+JSLitmus.test('Append Nodes (jQuery)', function() {
+  while(jQueryMark > 0){
+    jQuery("#list-test").append("<li>"+jQueryMark+"</li>")
+    jQueryMark--;
+  }
+});
+JSLitmus.test('Remove Nodes ( jQuery )', function() {
+  jQuery("#list-test").children().each(function(){
+    this.remove()
+  });
+});
+JSLitmus.test('Append Nodes (JS)', function() {
+  var doc = document;
+  while(jsMark > 0){
+   (document.getElementById("list-test").appendChild(document.createElement("div"))).innerText = jsMark;
+    jsMark--;
+  }
+});
+JSLitmus.test('Remove Nodes ( JS )', function() {
+ var doc = document;
+ var nodes = Array
+  .prototype
+  .slice
+  .apply(doc.querySelector("#list-test").children);
+  
+  nodes.forEach(function(item){
+    doc.querySelector("#list-test").removeChild(item)
+  });
+});
+JSLitmus.test('Inner HTML and Script Load (Zepto)', function() {
+  Zepto("#html").html(innerHTML+" -- Zepto");
+  Zepto("#html").html("");
+});
+JSLitmus.test('Inner HTML and Script Load (jQuery)', function() {
+  jQuery("#html").html(innerHTML+" -- jQuery");
+  jQuery("#html").html("");
+});
+JSLitmus.test('Inner HTML and Script Load (JS)', function() {
+  document.getElementById("html").innerHTML = innerHTML + " -- JS";
+  var scripts =  Array
+  .prototype
+  .slice
+  .apply( document.getElementById("html").getElementsByTagName("script"));
+  var count = scripts.length-1;
+  while(count >= 0){
+     eval(scripts[count].textContent);
+     count--;
+  }
+  document.getElementById("html").innerHTML="";
+});
+JSLitmus.test('Selector (Zepto)', function() {
+  Zepto("#title")
+});
+JSLitmus.test('Selector (jQuery)', function() {
+  jQuery("#title")
+});
+JSLitmus.test('Selector (JS)', function() {
+  document.querySelector("#title")
+});
+JSLitmus.test('Selector (JS - ALL)', function() {
+  document.querySelectorAll("#title")
+});
+JSLitmus.test('Toggle CSS  (Zepto)', function() {
+  Zepto("#toggleCSS").toggleClass("on")
+  Zepto("#toggleCSS").toggleClass("on")
+});
+JSLitmus.test('Toggle CSS  (jQuery)', function() {
+  jQuery("#toggleCSS").toggleClass("on")
+  jQuery("#toggleCSS").toggleClass("on")
+});
+JSLitmus.test('Toggle CSS  (JS)', function() {
+  document.getElementById("toggleCSS").classList.toggle("on");
+  document.getElementById("toggleCSS").classList.toggle("on")
+});
+JSLitmus.test('Toggle Show Hide  (Zepto)', function() {
+  Zepto("#title").hide();
+  Zepto("#title").show();
+});
+JSLitmus.test('Toggle Show Hide  (jQuery)', function() {
+  jQuery("#title").hide();
+  jQuery("#title").show();
+});
+JSLitmus.test('Toggle Show Hide  (JS)', function() {
+   document.getElementById("title").style.display = "none";
+   document.getElementById("title").style.display = "block";
+});
+JSLitmus.test('.each(Array)  (Zepto)', function() {
+  Zepto(arrayOfNumbers).each(function(item,index){})
+});
+JSLitmus.test('.each(Array) (jQuery)', function() {
+  jQuery(arrayOfNumbers).each(function(item,index){})
+});
+
+JSLitmus.test('.forEach() (js)', function() {
+  arrayOfNumbers.forEach(function(item,index){})
+});
+JSLitmus.test('.each(Array) (js - custom)', function() {
+  each(arrayOfNumbers,function(item,index){})
+});
+
+
+
+
+JSLitmus.test('.each(HTMLCollection)  (Zepto)', function() {
+  Zepto("ul#collection").children().each(function(item,index){})
+});
+JSLitmus.test('.each(HTMLCollection) (jQuery)', function() {
+  jQuery("ul#collection").children().each(function(item,index){})
+});
+JSLitmus.test('.each(HTMLCollection) (js - custom)', function() {
+  each(document.querySelector("ul#collection").children,function(item,index){})
+});
+
+
+
+
+JSLitmus.test('.map()  (Zepto)', function() {
+  Zepto(arrayOfNumbers).map(function(item,index){return item*2});
+});
+JSLitmus.test('.map() (jQuery)', function() {
+  jQuery(arrayOfNumbers).map(function(item,index){return item*2});
+});
+JSLitmus.test('.map() (JS)', function() {
+  arrayOfNumbers.map(function(item,index){return item*2});
+})
+//JSLitmus.test('empty test (non-looping)', function() {});
+</script>
+</body>
+</html>
