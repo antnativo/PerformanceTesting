@@ -26,24 +26,43 @@
     <li></li>
     <li></li>
     <li></li>
-  <ul>
+  </ul>
+   <div class="a">
+     <div class="b">
+       <div class="c">
+         <ul>
+           <li></li>
+           <li></li>
+           <li></li>
+           <li class="d">
+             <div>
+               <p class="e"><em>Here</em></p>
+             </div>
+           </li>
+            <li></li>
+           <li></li>
+           <li></li>
+         </ul>
+       </div>
+     </div>
+   </div> 
   <script src="js/JSLitmus.js"></script>
   <script src="js/zepto.js"></script>
   <script src="js/jquery.js"></script>
   <script>
 // The empty form of a non-looping test.  This should result in "Infinity"
 // operations per second, or very close to it.
-var ZeptoMark = 50, 
-    jQueryMark = 50, 
-    jsMark = 50, 
+var ZeptoMark = 10000, 
+    jQueryMark = 10000, 
+    jsMark = 10000, 
     innerHTML = "<div>Loading Script..</div><script>console.log('Loaded')<\/script></div>Script Loaded</div>",
     arrayOfNumbers = [0,1,2,3,4,5,6,7,8,9];
 var restAndRun = (function f(){
   if(document.querySelector("button[onclick='JSLitmus.runAll(event)']") != null){
       document.querySelector("button[onclick='JSLitmus.runAll(event)']").addEventListener("click",function(){
-        ZeptoMark = 50;
-        jQueryMark = 50;
-        jsMark = 50;
+        ZeptoMark = 10000;
+        jQueryMark =10000;
+        jsMark = 10000;
       },false)
   }else{
     setTimeout(f,0)
@@ -75,9 +94,13 @@ JSLitmus.test('Append Nodes (Zepto)', function() {
   }
 });
 JSLitmus.test('Remove Nodes ( Zepto )', function() {
-  Zepto("#list-test").children().each(function(){
-    this.remove()
-  });
+    // You Can Only Remove A Node Once
+    while (ZeptoMark < 10000) {
+      Zepto("#list-test").children().each(function(){
+        Zepto(this).remove()
+      });
+      ZeptoMark = 10000;
+    }
 });
 JSLitmus.test('Append Nodes (jQuery)', function() {
   while(jQueryMark > 0){
@@ -86,9 +109,13 @@ JSLitmus.test('Append Nodes (jQuery)', function() {
   }
 });
 JSLitmus.test('Remove Nodes ( jQuery )', function() {
-  jQuery("#list-test").children().each(function(){
-    this.remove()
-  });
+  // You Can Only Remove A Node Once
+  while (jQueryMark < 10000) {
+    jQuery("#list-test").children().each(function(){
+       jQuery(this).remove()
+    });
+    jQueryMark = 10000;
+  }
 });
 JSLitmus.test('Append Nodes (JS)', function() {
   var doc = document;
@@ -98,15 +125,19 @@ JSLitmus.test('Append Nodes (JS)', function() {
   }
 });
 JSLitmus.test('Remove Nodes ( JS )', function() {
- var doc = document;
- var nodes = Array
-  .prototype
-  .slice
-  .apply(doc.querySelector("#list-test").children);
-  
-  nodes.forEach(function(item){
-    doc.querySelector("#list-test").removeChild(item)
-  });
+  // You Can Only Remove A Node Once
+  while (jsMark < 10000) {
+    var doc = document;
+    var nodes = Array
+      .prototype
+      .slice
+      .apply(doc.querySelector("#list-test").children);
+      
+      nodes.forEach(function(item){
+        doc.querySelector("#list-test").removeChild(item)
+      });
+      jsMark = 10000;
+  }
 });
 JSLitmus.test('Inner HTML and Script Load (Zepto)', function() {
   Zepto("#html").html(innerHTML+" -- Zepto");
