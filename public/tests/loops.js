@@ -8,7 +8,7 @@ JSLitmus.test('.each(Array) (jQuery)', function() {
 JSLitmus.test('.forEach() (js)', function() {
   arrayOfNumbers.forEach(function (item, index) { });
 });
-JSLitmus.test('.each(Array) (js - custom)', function() {
+JSLitmus.test('.each(Array) (nQuery)', function() {
   nQuery(arrayOfNumbers).each(function (item, index) { });
 });
 
@@ -18,7 +18,7 @@ JSLitmus.test('.each(HTMLCollection)  (Zepto)', function() {
 JSLitmus.test('.each(HTMLCollection) (jQuery)', function() {
   jQuery(document.querySelector("ul#collection li").children).each(function (item, index) { });
 });
-JSLitmus.test('.each(HTMLCollection) (js - custom)', function() {
+JSLitmus.test('.each(HTMLCollection) (nQuery)', function() {
   nQuery(document.querySelector("ul#collection li").children).each(function (item, index) { });
 });
 
@@ -29,7 +29,7 @@ JSLitmus.test('.each(CSS Selectors)  (Zepto)', function() {
 JSLitmus.test('.each(CSS Selectors) (jQuery)', function() {
   jQuery("ul#collection li").each(function (item, index) { });
 });
-JSLitmus.test('.each(CSS Selectors) (js - custom)', function() {
+JSLitmus.test('.each(CSS Selectors) (nQuery)', function() {
   nQuery("ul#collection li").each(function (item, index) { });
 });
 

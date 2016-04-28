@@ -16,4 +16,8 @@ var restAndRun = (function f(){
     setTimeout(f,0)
   }
 });
+var eventHandlers = {
+  click: function (event) {}
+};
+
 restAndRun();
