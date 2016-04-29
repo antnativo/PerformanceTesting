@@ -55,6 +55,21 @@ var nQuery;
       el.innerHTML = value;
       ((typeof noCompile != undefined || noCompile == null) && noCompile == true) ? compileScripts(el) : null;
     }
+    function loopAndExecuteReverse(self,item,func) {
+      var counter = 0,
+        endpoint = item.length - 1;
+      while (counter <= endpoint) {
+        func(item[counter])
+        counter++;
+      }
+    }
+   function loopAndExecute(self,item,func) {
+     var counter = item.length - 1;
+      while (counter >= 0) {
+        func(item[counter])
+        counter--;
+      }
+    }
     // End of PRIVATE //
 
     // PUBLIC //
@@ -80,10 +95,14 @@ var nQuery;
     __.prototype.each = function (func) {
       var count = this.nodes.length - 1
       while (count >= 0) {
+        var that = this.nodes[count];
         func(this.nodes[count], count, this.nodes)
         count--;
       }
       return this;
+    };
+    __.prototype.andSelf = function () {
+      this.nodes = this.history[0];
     };
     __.prototype.currentNodes = function () {
       return this.nodes;
@@ -127,31 +146,134 @@ var nQuery;
       }
       return this;
     };
-    __.prototype.unbind = function (event, func) { 
-       if (this.nodes instanceof Array && typeof func == "function") {
-          this.each(function (item, index, array) {
-            (func) ? item.removeEventListener(event, func, false) : item["on"+event] = null;
-          })
-        } else {
-          (func) ? this.nodes.removeEventListener(event, func, false) : this.nodes["on"+event] = null;
-        }      
+    __.prototype.unbind = function (event, func) {
+      if (this.nodes instanceof Array && typeof func == "function") {
+        this.each(function (item, index, array) {
+          (func) ? item.removeEventListener(event, func, false) : item["on" + event] = null;
+        })
+      } else {
+        (func) ? this.nodes.removeEventListener(event, func, false) : this.nodes["on" + event] = null;
+      }
       return this;
-    }
-    __.prototype.click = function (func) { 
+    };
+    __.prototype.click = function (func) {
       if (typeof func == "function") {
         if (this.nodes instanceof Array) {
           this.each(function (item, index, array) {
             item.addEventListener("click", func, false);
           })
         } else {
-           this.nodes.addEventListener("click", func, false);
+          this.nodes.addEventListener("click", func, false);
         }
-      } else { 
+      } else {
         this.nodes.click();
       }
       return this;
-    }
+    };
+    __.prototype.append = function (node) {
+      if (typeof node == "string") {
+        this.nodes.insertAdjacentHTML("beforeend", node);
+      } else if (typeof node == "object") {
+        if (/(HTML)/gi.test(node.toString())) {
+          switch (/(Collection)/gi.test(node.toString())) {
+            case true:
+              loopAndExecuteReverse(this, arrNodes, this.nodes.appendChild);
+              break;
+            default:
+              this.nodes.appendChild(node);
+              break;
+          }
 
+        } else if (node instanceof Array) {
+          loopAndExecuteReverse(this, node, this.nodes.appendChild);
+        } else {
+          throw new Error("Passed in node or array is non-irretable")
+        }
+      } else {
+        throw new Error("Provdide Object or String Args")
+      }
+      return this;
+    };
+    __.prototype.children = function () {
+      setCurrentNode(this,converToArray(this.nodes.children));
+      return this;
+    };
+    __.prototype.remove = function () {
+      this.nodes.outerHTML = "";
+      return this;
+    };
+    __.prototype.hide = function () {
+      switch (this.nodes instanceof Array) {
+        case true:
+          loopAndExecute(this, this.nodes, function (node) {
+            node.style.display = "none";
+          })
+          break;
+        default:
+          this.nodes.style.display = "none"
+          break;
+      }
+      return this;
+    };
+    __.prototype.show = function () {
+      switch (this.nodes instanceof Array) {
+        case true:
+          loopAndExecute(this, this.nodes, function (node) {
+            node.style.display = "block";
+          })
+          break;
+        default:
+          this.nodes.style.display = "block"
+          break;
+      }
+      return this;
+    };
+    __.prototype.toggleClass = function (className) {
+      if (typeof className == "string") {
+        switch (this.nodes instanceof Array) {
+          case true:
+            loopAndExecute(this, this.nodes, function (node) {
+              node.classList.toggle(className)
+            })
+            break;
+          default:
+            this.nodes.classList.toggle(className);
+            break;
+        }
+      }
+      return this;
+    };
+    __.prototype.attr = function(attr,value){
+      if (typeof attr == "string" && typeof value != "undefined") {
+        switch (this.nodes instanceof Array) {
+          case true:
+            loopAndExecute(this, this.nodes, function (node) {
+              node.setAttribute(attr,value)
+            })
+            break;
+          default:
+            this.nodes.setAttribute(attr,value)
+            break;
+        }
+      }
+      return this;
+    };
+    __.prototype.removeAttr = function(attr){
+      if (typeof attr == "string") {
+        switch (this.nodes instanceof Array) {
+          case true:
+            loopAndExecute(this, this.nodes, function (node) {
+              node.removeAttribute(attr)
+            })
+            break;
+          default:
+            this.nodes.removeAttribute(attr);
+            break;
+        }
+      }
+      return this;
+    };
+    
     
     //Return new  __()
     return function (nodes) {

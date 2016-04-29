@@ -29,6 +29,21 @@ JSLitmus.test('Remove Nodes ( jQuery )', function() {
     jQueryMark = 10000;
   }
 });
+JSLitmus.test('Append Nodes (nQuery)', function() {
+  while(nQueryMark > 0){
+    nQuery("#list-test").append("<li>"+nQueryMark+"</li>")
+    nQueryMark--;
+  }
+});
+JSLitmus.test('Remove Nodes ( nQuery )', function() {
+  // You Can Only Remove A Node Once
+  while (nQueryMark < 10000) {
+    nQuery("#list-test").children().each(function (item) {
+       nQuery(item).remove();
+    });
+    nQueryMark = 10000;
+  }
+});
 JSLitmus.test('Append Nodes (JS)', function() {
   var doc = document;
   while(jsMark > 0){
@@ -51,6 +66,7 @@ JSLitmus.test('Remove Nodes ( JS )', function() {
       jsMark = 10000;
   }
 });
+
 JSLitmus.test('Inner HTML and Script Load (Zepto)', function() {
   Zepto("#html").html(innerHTML+" -- Zepto");
   Zepto("#html").html("");
@@ -84,6 +100,10 @@ JSLitmus.test('Toggle CSS  (jQuery)', function() {
   jQuery("#toggleCSS").toggleClass("on")
   jQuery("#toggleCSS").toggleClass("on")
 });
+JSLitmus.test('Toggle CSS  (nQuery)', function() {
+  nQuery("#toggleCSS").toggleClass("on")
+  nQuery("#toggleCSS").toggleClass("on")
+});
 JSLitmus.test('Toggle CSS  (JS)', function() {
   document.getElementById("toggleCSS").classList.toggle("on");
   document.getElementById("toggleCSS").classList.toggle("on")
@@ -96,7 +116,28 @@ JSLitmus.test('Toggle Show Hide  (jQuery)', function() {
   jQuery("#title").hide();
   jQuery("#title").show();
 });
+JSLitmus.test('Toggle Show Hide  (nQuery)', function() {
+  nQuery("#title").hide();
+  nQuery("#title").show();
+});
 JSLitmus.test('Toggle Show Hide  (JS)', function() {
    document.getElementById("title").style.display = "none";
    document.getElementById("title").style.display = "block";
+});
+
+JSLitmus.test('.attr() removeAtt()  (Zepto)', function() {
+  Zepto("#title").attr("data-attr","set");
+  Zepto("#title").removeAttr("data-attr");
+});
+JSLitmus.test('.attr() removeAtt()  (jQuery)', function() {
+  jQuery("#title").attr("data-attr","set");
+  jQuery("#title").removeAttr("data-attr");
+});
+JSLitmus.test('.attr() removeAtt()  (nQuery)', function() {
+  nQuery("#title").attr("data-attr","set");
+  nQuery("#title").removeAttr("data-attr");
+});
+JSLitmus.test('.attr() removeAtt()  (JS)', function() {
+  document.querySelector("#title").setAttribute("data-attr","set");
+  document.querySelector("#title").removeAttribute("data-attr");
 });
