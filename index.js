@@ -24,7 +24,7 @@ server.get(/(.*)/,restify.serveStatic({
   default: 'index.html'
 }));
 
-var port = process.env.PORT || 8081;
+var port = process.env.PORT || 8082;
 server.listen(port,function(){
 	console.log("Server Started.\n\nPress Ctrl+c to quit server: 8081\n\nTesting API http://www.broofa.com/Tools/JSLitmus/")
 })

@@ -1,7 +1,6 @@
 // Custom JS Library used for Testing Vanilla JS - nQuery =)
 var nQuery;
-;(function () {
-
+(function () {
   nQuery = (function () {
     // PRIVATE //
     var doc = document;
@@ -29,12 +28,11 @@ var nQuery;
         internalDoc = this.nodes;
       } else if (len > 0 && this.nodes != self.history[len - 1]) {
         internalDoc = self.history[len - 1];
-      } else { 
+      } else {
         internalDoc = doc
       }
       if (internalDoc instanceof Array)
         throw new Error("Parent Node must be and HTMLElement");
-      
       switch (/,/gi.test(str)) {
         case true:
           convertToArrayAndSetNode(self, internalDoc.querySelectorAll(str));
@@ -55,7 +53,7 @@ var nQuery;
       el.innerHTML = value;
       ((typeof noCompile != undefined || noCompile == null) && noCompile == true) ? compileScripts(el) : null;
     }
-    function loopAndExecuteReverse(self,item,func) {
+    function loopAndExecuteReverse(self, item, func) {
       var counter = 0,
         endpoint = item.length - 1;
       while (counter <= endpoint) {
@@ -63,15 +61,14 @@ var nQuery;
         counter++;
       }
     }
-   function loopAndExecute(self,item,func) {
-     var counter = item.length - 1;
+    function loopAndExecute(self, item, func) {
+      var counter = item.length - 1;
       while (counter >= 0) {
         func(item[counter])
         counter--;
       }
     }
     // End of PRIVATE //
-
     // PUBLIC //
     function __(nodes) {
       this.nodes;
@@ -90,7 +87,7 @@ var nQuery;
       } else {
         throw new Error("Unable to find node")
       }
-
+      //(<)(\w+)(\s+)([\w="'])*(>)[\w\s\d\!@#$%^&*()_\-+={}\[\]|\\:;"',.?\/~`Œ„´‰ˇÁ¨ˆØ∏ÅÍÎ˝ÓÔÒÚ¸˛˜Â]*((<)(\/)\2{0,1}(>)) 
     };
     __.prototype.each = function (func) {
       var count = this.nodes.length - 1
@@ -132,7 +129,7 @@ var nQuery;
             insertHTMLAndJS(this, value, this.nodes)
             break;
         }
-      } else { 
+      } else {
         return (this.nodes instanceof Array) ? null : this.nodes.innerHTML;
       }
     }
@@ -195,7 +192,7 @@ var nQuery;
       return this;
     };
     __.prototype.children = function () {
-      setCurrentNode(this,converToArray(this.nodes.children));
+      setCurrentNode(this, converToArray(this.nodes.children));
       return this;
     };
     __.prototype.remove = function () {
@@ -243,22 +240,22 @@ var nQuery;
       }
       return this;
     };
-    __.prototype.attr = function(attr,value){
+    __.prototype.attr = function (attr, value) {
       if (typeof attr == "string" && typeof value != "undefined") {
         switch (this.nodes instanceof Array) {
           case true:
             loopAndExecute(this, this.nodes, function (node) {
-              node.setAttribute(attr,value)
+              node.setAttribute(attr, value)
             })
             break;
           default:
-            this.nodes.setAttribute(attr,value)
+            this.nodes.setAttribute(attr, value)
             break;
         }
       }
       return this;
     };
-    __.prototype.removeAttr = function(attr){
+    __.prototype.removeAttr = function (attr) {
       if (typeof attr == "string") {
         switch (this.nodes instanceof Array) {
           case true:
@@ -273,8 +270,6 @@ var nQuery;
       }
       return this;
     };
-    
-    
     //Return new  __()
     return function (nodes) {
       return new __(nodes);
