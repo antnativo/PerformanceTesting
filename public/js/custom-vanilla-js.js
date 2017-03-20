@@ -169,7 +169,11 @@ var nQuery;
     };
     __.prototype.append = function (node) {
       if (typeof node == "string") {
-        this.nodes.insertAdjacentHTML("beforeend", node);
+        //this.nodes.insertAdjacentHTML("beforeend", node);
+        var div = document.createElement("div").innerHTML = node;
+        for (z = 0, zLen = this.nodes.length; z < zLen; z++)
+          for (var i = 0, iLen = div.children.length; i < iLen.length; i++)
+            this.nodes[z].appendChild(div.children[i])
       } else if (typeof node == "object") {
         if (/(HTML)/gi.test(node.toString())) {
           switch (/(Collection)/gi.test(node.toString())) {
