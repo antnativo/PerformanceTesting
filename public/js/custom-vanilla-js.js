@@ -68,6 +68,36 @@ var nQuery;
         counter--;
       }
     }
+    // Used to clone script node and append it to the dom. Set onload event handler to removeScriptNodeOnLoad, which removes node -- AC 5/26/2016
+    // Used to remove script node once node is loaded -- AC 5/26/2016
+    function removeScriptNodeOnLoad(e) { 
+        document.head.removeChild(e.target)
+    }
+    function createScriptNodeFromNode(node) {
+      var jsnode = document.createElement("script")
+      jsnode.src = node.src;
+      jsnode.type = (node.type) ? node.type : "text/javascript";
+      jsnode.onload = removeScriptNodeOnLoad;
+      jsnode.onerror = removeScriptNodeOnLoad;
+      document.head.appendChild( jsnode )
+    } 
+    function compileInlineJavaScript(el) {
+      if (typeof el != "undefined" && typeof el.nodeName != "undefined" && el.nodeName != null && el.nodeName.toUpperCase().localeCompare('SCRIPT') == 0 && (!el.type || el.type.localeCompare('text/javascript') == 0) && !el.src) {
+        window['eval'].call(window, el.innerHTML)
+        return true;
+      } else if (typeof el != "undefined" && typeof el.nodeName != "undefined" && el.nodeName != null && el.nodeName.toUpperCase().localeCompare('SCRIPT') == 0 && (!el.type || el.type.localeCompare('text/javascript') == 0) && el.src){ // Added Condition to find script nodes with src  -- AC 5/26/2016
+        createScriptNodeFromNode(el) // Used to load external script and remove node once loaded -- AC 5/26/2016
+        return true;
+      }
+      return false;
+    }
+    function traverseNode(node, fun) {
+      if (typeof node != "undefined") {
+          fun(node) // Doc: If script tag with inline code, parse
+            for (var i = 0, len = node.childNodes.length; i < len; i++)
+              traverseNode(node.childNodes[i],fun) //Doc: determine each child if they are script tags with inline code. If not find the child's children --AC 5/23/16
+      }
+    }
     // End of PRIVATE //
     // PUBLIC //
     function __(nodes) {
@@ -170,10 +200,17 @@ var nQuery;
     __.prototype.append = function (node) {
       if (typeof node == "string") {
         //this.nodes.insertAdjacentHTML("beforeend", node);
-        var div = document.createElement("div").innerHTML = node;
+        var div = document.createElement("div")
+        div.innerHTML = node;
+        if (!(this.nodes instanceof Array))
+          this.nodes = [this.nodes]  
         for (z = 0, zLen = this.nodes.length; z < zLen; z++)
-          for (var i = 0, iLen = div.children.length; i < iLen.length; i++)
-            this.nodes[z].appendChild(div.children[i])
+          for (var i = 0, iLen = div.childNodes.length; i < iLen; i++){
+            if (div.childNodes[i].tagName && div.childNodes[i].tagName.toLowerCase() == "script") compileInlineJavaScript(div.childNodes[i])
+            else if(div.childNodes[i].length) traverseNode(div.childNodes[i], function () { compileInlineJavaScript(div.childNodes[i]); })
+            this.nodes[z].appendChild(div.childNodes[i].cloneNode(true))
+          }
+        //traverseNode(div, function () { compileInlineJavaScript(div); })
       } else if (typeof node == "object") {
         if (/(HTML)/gi.test(node.toString())) {
           switch (/(Collection)/gi.test(node.toString())) {
